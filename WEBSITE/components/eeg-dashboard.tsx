@@ -116,11 +116,7 @@ export function EEGDashboard() {
   const [recordings, setRecordings] = useState<EEGReading[]>([])
   const [startTime, setStartTime] = useState<number | null>(null)
   const [duration, setDuration] = useState("00:00:00")
-  const [bluetoothDevice, setBluetoothDevice] = useState<BluetoothDevice | null>(null)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
-  const [characteristic, setCharacteristic] = useState<BluetoothRemoteGATTCharacteristic | null>(null)
-
+  
   const [signalHistory, setSignalHistory] = useState<{
     [key: string]: number[]
   }>({
@@ -171,23 +167,7 @@ export function EEGDashboard() {
                 (dataView.getUint8(index + 9) << 16) |
                 (dataView.getUint8(index + 10) << 8) |
                 dataView.getUint8(index + 11)
-              data.lowBeta =
-                (dataView.getUint8(index + 12) << 16) |
-                (dataView.getUint8(index + 13) << 8) |
-                dataView.getUint8(index + 14)
-              data.highBeta =
-                (dataView.getUint8(index + 15) << 16) |
-                (dataView.getUint8(index + 16) << 8) |
-                dataView.getUint8(index + 17)
-              data.lowGamma =
-                (dataView.getUint8(index + 18) << 16) |
-                (dataView.getUint8(index + 19) << 8) |
-                dataView.getUint8(index + 20)
-              data.highGamma =
-                (dataView.getUint8(index + 21) << 16) |
-                (dataView.getUint8(index + 22) << 8) |
-                dataView.getUint8(index + 23)
-              index += 24
+            
             }
             break
           case 0x80: // Raw EEG (2 bytes)
