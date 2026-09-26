@@ -202,18 +202,6 @@ export function EEGDashboard() {
         }
       }
 
-      return Object.keys(data).length > 1 ? data : null
-    } catch (error) {
-      console.error("Error parsing ThinkGear data:", error)
-      return null
-    }
-  }
-
-  const connectToMindwave = async () => {
-    if (!navigator.bluetooth) {
-      alert("Bluetooth is not supported in this browser. Please use Chrome, Edge, or another Chromium-based browser.")
-      return
-    }
 
     setIsConnecting(true)
     try {
@@ -236,50 +224,6 @@ export function EEGDashboard() {
           const char = await service.getCharacteristic("0000ffe1-0000-1000-8000-00805f9b34fb")
 
           setCharacteristic(char)
-
-          // Start notifications for real-time data
-          await char.startNotifications()
-          char.addEventListener("characteristicvaluechanged", (event) => {
-            const target = event.target as BluetoothRemoteGATTCharacteristic
-            const dataView = target.value
-            if (dataView) {
-              const parsedData = parseThinkGearData(dataView)
-              if (parsedData && Object.keys(parsedData).length > 2) {
-                const reading: EEGReading = {
-                  timestamp: parsedData.timestamp || Date.now(),
-                  attention: parsedData.attention || 0,
-                  meditation: parsedData.meditation || 0,
-                  delta: parsedData.delta || 0,
-                  theta: parsedData.theta || 0,
-                  lowAlpha: parsedData.lowAlpha || 0,
-                  highAlpha: parsedData.highAlpha || 0,
-                  lowBeta: parsedData.lowBeta || 0,
-                  highBeta: parsedData.highBeta || 0,
-                  lowGamma: parsedData.lowGamma || 0,
-                  highGamma: parsedData.highGamma || 0,
-                  rawEeg: parsedData.rawEeg || 0,
-                  signalQuality: parsedData.signalQuality || 0,
-                }
-
-                setCurrentReading(reading)
-
-                setSignalHistory((prev) => ({
-                  lowAlpha: [...prev.lowAlpha.slice(-49), reading.lowAlpha],
-                  highAlpha: [...prev.highAlpha.slice(-49), reading.highAlpha],
-                  lowBeta: [...prev.lowBeta.slice(-49), reading.lowBeta],
-                  highBeta: [...prev.highBeta.slice(-49), reading.highBeta],
-                  lowGamma: [...prev.lowGamma.slice(-49), reading.lowGamma],
-                  highGamma: [...prev.highGamma.slice(-49), reading.highGamma],
-                  delta: [...prev.delta.slice(-49), reading.delta],
-                  theta: [...prev.theta.slice(-49), reading.theta],
-                }))
-
-                if (isRecording) {
-                  setRecordings((prev) => [...prev, reading])
-                }
-              }
-            }
-          })
 
           setIsConnected(true)
           alert(`Successfully connected to ${device.name}! Real EEG data collection started.`)
@@ -403,38 +347,6 @@ export function EEGDashboard() {
   const stopRecording = () => {
     setIsRecording(false)
     setStartTime(null)
-  }
-
-  const exportCSV = () => {
-    if (recordings.length === 0) return
-
-    const headers = [
-      "timestamp",
-      "attention",
-      "meditation",
-      "delta",
-      "theta",
-      "lowAlpha",
-      "highAlpha",
-      "lowBeta",
-      "highBeta",
-      "lowGamma",
-      "highGamma",
-      "rawEeg",
-      "signalQuality",
-    ]
-    const csvContent = [
-      headers.join(","),
-      ...recordings.map((r) => headers.map((h) => r[h as keyof EEGReading]).join(",")),
-    ].join("\n")
-
-    const blob = new Blob([csvContent], { type: "text/csv" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `eeg-data-${new Date().toISOString().slice(0, 19)}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
   }
 
   const exportJSON = () => {
