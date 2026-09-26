@@ -95,12 +95,3 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
 
   return <TelemetryContext.Provider value={value}>{children}</TelemetryContext.Provider>
 }
-
-/** Read the latest centralized telemetry snapshot. Every card/hook uses this — never its own fetch/poll/simulation. */
-export function useTelemetry(): TelemetryContextValue {
-  const ctx = useContext(TelemetryContext)
-  if (!ctx) {
-    throw new Error("useTelemetry() must be used within a <TelemetryProvider>")
-  }
-  return ctx
-}
