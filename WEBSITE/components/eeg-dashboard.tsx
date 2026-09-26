@@ -158,15 +158,7 @@ export function EEGDashboard() {
               data.theta =
                 (dataView.getUint8(index + 3) << 16) |
                 (dataView.getUint8(index + 4) << 8) |
-                dataView.getUint8(index + 5)
-              data.lowAlpha =
-                (dataView.getUint8(index + 6) << 16) |
-                (dataView.getUint8(index + 7) << 8) |
-                dataView.getUint8(index + 8)
-              data.highAlpha =
-                (dataView.getUint8(index + 9) << 16) |
-                (dataView.getUint8(index + 10) << 8) |
-                dataView.getUint8(index + 11)
+                dataView.getUint8(index + 5
             
             }
             break
@@ -419,28 +411,7 @@ export function EEGDashboard() {
     },
     {
       name: "High Gamma",
-      key: "highGamma" as keyof EEGReading,
-      value: effectiveReading?.highGamma || 0,
-      color: "#d97706",
-      description: "40-100 Hz - High-level cognitive",
-      maxValue: 15000,
-    },
-    {
-      name: "Delta",
-      key: "delta" as keyof EEGReading,
-      value: effectiveReading?.delta || 0,
-      color: "#ef4444",
-      description: "0.5-4 Hz - Deep sleep",
-      maxValue: 80000,
-    },
-    {
-      name: "Theta",
-      key: "theta" as keyof EEGReading,
-      value: effectiveReading?.theta || 0,
-      color: "#8b5cf6",
-      description: "4-8 Hz - Deep meditation",
-      maxValue: 60000,
-    },
+     
   ]
 
   const linkQuality = effectiveReading ? Math.max(0, 100 - effectiveReading.signalQuality) : 0
@@ -537,11 +508,7 @@ export function EEGDashboard() {
                     <div className="font-data text-2xl font-semibold text-neural mt-1">{attentionPct}%</div>
                   </div>
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
-                      <span className="h-1.5 w-1.5 rounded-full bg-safe" /> Meditation
-                    </div>
-                    <div className="font-data text-2xl font-semibold text-safe mt-1">{meditationPct}%</div>
-                  </div>
+                   
                   <div>
                     <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
                       <span className="h-1.5 w-1.5 rounded-full bg-vital" /> Link Quality
