@@ -83,13 +83,6 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
       startPolling()
     }
 
-    return () => {
-      cancelled = true
-      source?.close()
-      if (pollTimer) clearInterval(pollTimer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const value = useMemo(() => ({ telemetry, history, ready }), [telemetry, history, ready])
 
